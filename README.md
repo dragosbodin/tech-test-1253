@@ -68,3 +68,7 @@ src/
       constraints reasons.
     - Use [Comlink](https://www.npmjs.com/package/comlink) to abstract worker communications
       and [TanStack Query](https://tanstack.com/query/latest) to manage asynchronous data.
+
+## Demo recording
+
+[demo.mov](demo.mov)
