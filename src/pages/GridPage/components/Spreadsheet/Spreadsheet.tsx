@@ -1,9 +1,10 @@
-import type { ColDef, ValueSetterFunc } from 'ag-grid-community'
+import type { ColDef, ValueGetterFunc, ValueSetterFunc } from 'ag-grid-community'
 import { themeQuartz } from 'ag-grid-community'
 import { AgGridReact } from 'ag-grid-react'
 import { useRef, useState } from 'react'
 
 import { useFormulaWorker } from 'core/hooks/useFormulaWorker'
+import { useSyncWorker } from 'core/hooks/useSyncWorker'
 import { alphabetLetters, mockData } from 'mocks/mockData'
 import variables from 'styles/variables.module.scss'
 import type { SpreadsheetRecord } from 'types/SpreadsheetRecord'
@@ -13,11 +14,13 @@ import styles from './Spreadsheet.module.scss'
 const { colorPrimary, colorInfo, fontFamilyPrimary, fontFamilyHeading } = variables
 
 export const Spreadsheet = () => {
+    const [rowData, setRowData] = useState<SpreadsheetRecord[]>(mockData)
+    const syncTabState = useSyncWorker(mockData, setRowData, 'id')
     const gridRef = useRef<AgGridReact<SpreadsheetRecord>>(null)
     const [gridReady, setGridReady] = useState(false)
     const { parseFormula } = useFormulaWorker(gridRef.current?.api ?? null, gridReady)
 
-    const valueSetter: ValueSetterFunc<SpreadsheetRecord> = ({
+    const recordValueSetter: ValueSetterFunc<SpreadsheetRecord> = ({
         newValue,
         oldValue,
         column,
@@ -38,24 +41,30 @@ export const Spreadsheet = () => {
         return true
     }
 
-    const [colDefs] = useState<ColDef<SpreadsheetRecord>[]>(
-        alphabetLetters.map((letter): ColDef<SpreadsheetRecord> => {
+    const rowIndexValueGetter: ValueGetterFunc = ({ node }) => {
+        return (node?.rowIndex ?? 0) + 1
+    }
+
+    const [colDefs] = useState<ColDef<SpreadsheetRecord>[]>([
+        {
+            field: 'rowIndex',
+            headerName: '#',
+            valueGetter: rowIndexValueGetter,
+            sortable: false,
+            width: 60,
+            pinned: 'left',
+        },
+        ...alphabetLetters.map((letter): ColDef<SpreadsheetRecord> => {
             return {
                 field: letter,
                 headerName: letter,
                 editable: true,
                 resizable: true,
                 cellDataType: false,
-                valueSetter,
-                onCellValueChanged: ({ data, node, newValue, oldValue }) => {
-                    console.log('onCellValueChanged', newValue === oldValue)
-                    if (newValue !== oldValue) {
-                        node?.setDataValue(letter, data[letter])
-                    }
-                },
+                valueSetter: recordValueSetter,
             }
-        })
-    )
+        }),
+    ])
 
     return (
         <div className={styles.spreadsheet}>
@@ -67,10 +76,13 @@ export const Spreadsheet = () => {
                     headerFontFamily: fontFamilyHeading,
                     oddRowBackgroundColor: colorInfo,
                 })}
-                rowData={mockData}
+                rowData={rowData}
                 columnDefs={colDefs}
                 ref={gridRef}
                 onGridReady={() => setGridReady(true)}
+                onCellValueChanged={(_ev) => {
+                    syncTabState(rowData)
+                }}
             />
         </div>
     )
