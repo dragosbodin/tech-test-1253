@@ -1,0 +1,182 @@
+{
+  "extends": [
+    "prettier",
+    "eslint:recommended",
+    "plugin:promise/recommended",
+    "plugin:react/recommended",
+    "plugin:react-hooks/recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "plugins": [
+    "simple-import-sort",
+    "unused-imports",
+    "react-refresh"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "rules": {
+    "react/react-in-jsx-scope": "off",
+    "react/display-name": "off",
+    "react/jsx-curly-brace-presence": [
+      "error",
+      {
+        "props": "never",
+        "children": "ignore",
+        "propElementValues": "always"
+      }
+    ],
+    "unused-imports/no-unused-vars": [
+      "warn",
+      {
+        "vars": "all",
+        "varsIgnorePattern": "^_",
+        "args": "after-used",
+        "argsIgnorePattern": "^_"
+      }
+    ],
+    "no-implicit-coercion": [
+      "error",
+      {
+        "boolean": false
+      }
+    ],
+    "@typescript-eslint/no-empty-interface": [
+      "off"
+    ],
+    "@typescript-eslint/no-unused-vars": [
+      "off"
+    ],
+    "@typescript-eslint/ban-ts-comment": [
+      "off"
+    ],
+    "no-return-await": [
+      "warn"
+    ],
+    "import/order": [
+      "off"
+    ],
+    "quotes": [
+      "error",
+      "single",
+      {
+        "avoidEscape": true
+      }
+    ],
+    "react-refresh/only-export-components": [
+      "warn",
+      {
+        "allowConstantExport": true
+      }
+    ],
+    "simple-import-sort/imports": [
+      "error",
+      {
+        "groups": [
+          // NPM packages
+          // Imports that start with a letter or digit or underscore or @ followed by a letter
+          [
+            "^@?\\w"
+          ],
+          // Absolute imports from aliases defined in tsconfig.json
+          [
+            "^src/",
+            "^constants",
+            "^core",
+            "^mocks",
+            "^pages",
+            "^styles",
+            "^types",
+            "^ui"
+          ],
+          // Absolute imports
+          // Imports that do not start with a dot
+          [
+            "^[^.]"
+          ],
+          // Relative imports
+          // Imports that start with a dot
+          [
+            "^\\."
+          ],
+          // Style imports
+          // Imports that end in `.css` or `.scss`
+          [
+            "^\\..*(\\.css|\\.scss)$"
+          ]
+        ]
+      }
+    ]
+  },
+  "ignorePatterns": [
+    "*.md",
+    "**/dist/**",
+    "**/node_modules/**"
+  ],
+  "overrides": [
+    {
+      "files": [
+        "**/*.js"
+      ],
+      "rules": {
+        "@typescript-eslint/no-var-requires": [
+          "off"
+        ]
+      }
+    },
+    {
+      "files": [
+        "**/*.ts?(x)"
+      ],
+      "rules": {
+        "react/no-unescaped-entities": [
+          "error",
+          {
+            "forbid": [
+              ">",
+              "}"
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "files": [
+        "*.test.tsx",
+        "*.spec.tsx",
+        "*.test.jsx",
+        "*.spec.jsx"
+      ],
+      "rules": {
+        "react/display-name": [
+          "off"
+        ],
+        "react/react-in-jsx-scope": [
+          "off"
+        ]
+      }
+    },
+    {
+      "files": [
+        "*.json"
+      ],
+      "rules": {
+        "quotes": [
+          "off"
+        ]
+      }
+    },
+    {
+      "files": [
+        "src/**/*.ts",
+        "src/**/*.tsx"
+      ],
+      "rules": {
+        "@typescript-eslint/no-unnecessary-condition": "error"
+      },
+      "parserOptions": {
+        "project": [
+          "./tsconfig.json"
+        ]
+      }
+    }
+  ]
+}

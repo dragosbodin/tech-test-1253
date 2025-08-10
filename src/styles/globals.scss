@@ -1,0 +1,107 @@
+@use 'antd/lib/style/reset.css';
+@use './variables';
+@use './colours';
+@use './mixins';
+@use './overrides';
+@use './fonts';
+
+body {
+    min-height: 100vh;
+    background-color: white;
+    color: variables.$text-primary;
+    font-size: 14px;
+    line-height: 28px;
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    font-family: variables.$font-family-primary;
+    -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: variables.$font-family-heading;
+    font-weight: 400;
+    letter-spacing: normal;
+
+    &:first-child {
+        margin-top: 0;
+    }
+
+    &:last-child {
+        margin-bottom: 0;
+    }
+}
+
+p {
+    margin-top: 0;
+
+    &:last-child {
+        margin-bottom: 0;
+    }
+}
+
+fieldset {
+    padding: 0;
+    margin: 0;
+    border: none;
+}
+
+legend {
+    padding: 0;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.page {
+    padding: 16px 24px 40px;
+}
+
+.anchor {
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.linkButton,
+a.ant-typography.linkButton {
+    color: variables.$text-primary;
+    font-weight: 700;
+
+    &--small {
+        font-size: 12px;
+    }
+
+    &:hover,
+    &:hover svg {
+        color: variables.$color-primary-hover;
+    }
+
+    &:active,
+    &:active svg {
+        color: variables.$color-primary-active;
+    }
+
+    svg {
+        color: variables.$color-primary;
+        transition: color 0.3s ease;
+    }
+}
+
+.color--primary {
+    color: variables.$color-primary;
+}
+
+.color--warning {
+    color: variables.$color-warning;
+}
+
+.color--info {
+    color: variables.$color-info-bg;
+}

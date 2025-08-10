@@ -1,0 +1,38 @@
+{
+    "compilerOptions": {
+        "target": "ES2022",
+        "useDefineForClassFields": true,
+        "lib": ["ES2022", "DOM", "DOM.iterable"],
+        "allowJs": true,
+        "skipLibCheck": true,
+        "strict": true,
+        "erasableSyntaxOnly": true,
+        "forceConsistentCasingInFileNames": true,
+        "noEmit": true,
+        "incremental": true,
+        "esModuleInterop": true,
+        "module": "ESNext",
+        "moduleResolution": "bundler",
+        "resolveJsonModule": true,
+        "isolatedModules": true,
+        "verbatimModuleSyntax": true,
+        "jsx": "react-jsx",
+        "baseUrl": ".",
+        "noFallthroughCasesInSwitch": true,
+        "noUncheckedSideEffectImports": true,
+        "sourceMap": true,
+        "paths": {
+            "constants/*": ["src/constants/*"],
+            "core/*": ["src/core/*"],
+            "mocks/*": ["src/mocks/*"],
+            "pages/*": ["src/pages/*"],
+            "styles/*": ["src/styles/*"],
+            "types/*": ["src/types/*"],
+            "utils/*": ["src/utils/*"],
+            "ui/*": ["src/ui/*"],
+            "images/*": ["public/images/*"]
+        }
+    },
+    "include": ["**/*.ts", "**/*.tsx"],
+    "exclude": ["node_modules"]
+}

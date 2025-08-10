@@ -1,0 +1,14 @@
+@use 'variables';
+
+:export {
+    fontFamilyPrimary: variables.$font-family-primary;
+    fontFamilyHeading: variables.$font-family-heading;
+    colorPrimary: variables.$color-primary;
+    colorPrimaryHover: variables.$color-primary-hover;
+    colorPrimaryActive: variables.$color-primary-active;
+    colorInfo: variables.$color-info;
+    colorInfoBg: variables.$color-info-bg;
+    colorWarning: variables.$color-warning;
+    textPrimary: variables.$text-primary;
+    textSecondary: variables.$text-secondary;
+}

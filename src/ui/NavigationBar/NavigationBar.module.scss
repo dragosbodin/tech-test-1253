@@ -1,0 +1,30 @@
+.accountNavigation {
+    position: fixed;
+    top: 0;
+    left: 176px;
+    right: 0;
+    line-height: 64px;
+    font-weight: 700;
+    background-color: white;
+    z-index: 100;
+}
+
+.accountNavigation:global(.ant-menu-light.ant-menu-horizontal > .ant-menu-item-selected),
+.accountNavigation:global(
+        .ant-menu-light > .ant-menu.ant-menu-horizontal > .ant-menu-item-selected
+    ),
+.accountNavigation:global(
+        .ant-menu-light.ant-menu-horizontal > .ant-menu-submenu-selected
+    ),
+.accountNavigation:global(
+        .ant-menu-light > .ant-menu.ant-menu-horizontal > .ant-menu-submenu-selected
+    ) {
+    color: #323232;
+}
+
+.accountNavigation:global(.ant-menu-light .ant-menu-item),
+.accountNavigation:global(.ant-menu-light > .ant-menu .ant-menu-item),
+.accountNavigation:global(.ant-menu-light .ant-menu-submenu-title),
+.accountNavigation:global(.ant-menu-light > .ant-menu .ant-menu-submenu-title) {
+    color: #c9cdd7;
+}
