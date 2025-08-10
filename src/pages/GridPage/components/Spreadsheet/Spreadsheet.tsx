@@ -11,7 +11,8 @@ import type { SpreadsheetRecord } from 'types/SpreadsheetRecord'
 
 import styles from './Spreadsheet.module.scss'
 
-const { colorPrimary, colorInfo, fontFamilyPrimary, fontFamilyHeading } = variables
+const { colorPrimary, colorInfo, colorDestroy, fontFamilyPrimary, fontFamilyHeading } =
+    variables
 
 export const Spreadsheet = () => {
     const [rowData, setRowData] = useState<SpreadsheetRecord[]>(mockData)
@@ -26,6 +27,7 @@ export const Spreadsheet = () => {
         column,
         data,
         node,
+        api,
     }) => {
         if (newValue === oldValue) return false
 
@@ -35,6 +37,9 @@ export const Spreadsheet = () => {
             const rowIdx = (node?.rowIndex ?? 0) + 1
             parseFormula(String(newValue), `${colId}${rowIdx}`)
         } else {
+            if (node != null && newValue < 0) {
+                api.flashCells({ columns: [column], rowNodes: [node] })
+            }
             data[colId] = newValue
         }
 
@@ -71,10 +76,11 @@ export const Spreadsheet = () => {
             <AgGridReact
                 theme={themeQuartz.withParams({
                     accentColor: colorPrimary,
+                    oddRowBackgroundColor: colorInfo,
+                    valueChangeValueHighlightBackgroundColor: colorDestroy,
                     fontFamily: fontFamilyPrimary,
                     cellFontFamily: fontFamilyPrimary,
                     headerFontFamily: fontFamilyHeading,
-                    oddRowBackgroundColor: colorInfo,
                 })}
                 rowData={rowData}
                 columnDefs={colDefs}

@@ -3,22 +3,31 @@ import { useEffect, useRef } from 'react'
 
 import { CELL_REFERENCE_RX } from 'constants/formula'
 import { formulaWebWorker } from 'core/workers/formulaWorker'
+import {
+    FORMULA_CALCULATE_COMPLETE_MESSAGE_TYPE,
+    FORMULA_CALCULATE_MESSAGE_TYPE,
+    FORMULA_CLOSE_MESSAGE_TYPE,
+    FORMULA_OPEN_MESSAGE_TYPE,
+    FORMULA_PARSE_COMPLETE_MESSAGE_TYPE,
+    FORMULA_PARSE_MESSAGE_TYPE,
+    type FormulaWorkerMessageChannel,
+} from 'types/FormulaWorker'
 import type { SpreadsheetRecord } from 'types/SpreadsheetRecord'
 
 export const useFormulaWorker = (
     gridApi: GridApi<SpreadsheetRecord> | null,
     enabled: boolean
 ) => {
-    const messagePort = useRef<MessageChannel['port1']>(null)
+    const messagePort = useRef<FormulaWorkerMessageChannel['port1']>(null)
 
     useEffect(() => {
-        const { port1, port2 } = new MessageChannel()
+        const { port1, port2 }: FormulaWorkerMessageChannel = new MessageChannel()
         messagePort.current = port1
         port1.onmessage = ({ data }) => {
             const { type } = data
 
             switch (type) {
-                case 'parse-complete': {
+                case FORMULA_PARSE_COMPLETE_MESSAGE_TYPE: {
                     const { isValid, parsedFormula, cellRef } = data
 
                     if (isValid && parsedFormula != null && gridApi != null) {
@@ -27,7 +36,7 @@ export const useFormulaWorker = (
 
                     return
                 }
-                case 'calculate-complete': {
+                case FORMULA_CALCULATE_COMPLETE_MESSAGE_TYPE: {
                     const { result, cellRef } = data
 
                     if (result != null && gridApi != null) {
@@ -40,10 +49,19 @@ export const useFormulaWorker = (
                         }
 
                         rowNodeAtIdx.setDataValue(letter, result)
+                        if (result < 0) {
+                            gridApi.flashCells({
+                                columns: [letter],
+                                rowNodes: [rowNodeAtIdx],
+                            })
+                        }
                     }
 
                     return
                 }
+                default:
+                    // This ensures all cases are handled
+                    return type satisfies never
             }
         }
         port1.onmessageerror = (ev) => {
@@ -52,14 +70,14 @@ export const useFormulaWorker = (
 
         formulaWebWorker.postMessage(
             {
-                type: 'open',
+                type: FORMULA_OPEN_MESSAGE_TYPE,
                 port: port2,
             },
             [port2]
         )
 
         return () => {
-            messagePort.current?.postMessage({ type: 'close' })
+            messagePort.current?.postMessage({ type: FORMULA_CLOSE_MESSAGE_TYPE })
             messagePort.current?.close()
             messagePort.current = null
         }
@@ -69,7 +87,7 @@ export const useFormulaWorker = (
         if (messagePort.current == null) throw new Error('formulaWorker is not available')
 
         messagePort.current.postMessage({
-            type: 'parse',
+            type: FORMULA_PARSE_MESSAGE_TYPE,
             formula,
             cellRef,
         })
@@ -106,7 +124,7 @@ export const useFormulaWorker = (
         const mathExp = tokensWithCellValues.join('')
 
         messagePort.current.postMessage({
-            type: 'calculate',
+            type: FORMULA_CALCULATE_MESSAGE_TYPE,
             mathExp,
             cellRef,
         })

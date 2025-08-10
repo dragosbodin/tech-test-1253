@@ -2,18 +2,24 @@ import { useEffect, useRef } from 'react'
 
 import { syncSharedWorker } from 'core/workers/syncWorker'
 import type { SpreadsheetRecord } from 'types/SpreadsheetRecord'
+import {
+    SYNC_CLOSE_MESSAGE_TYPE,
+    SYNC_GET_STATE_MESSAGE_TYPE,
+    SYNC_SET_STATE_MESSAGE_TYPE,
+    type SyncWorkerMessageChannel,
+} from 'types/SyncWorker'
 
 export const useSyncWorker = (
     initialState: SpreadsheetRecord[],
     setState: (newState: SpreadsheetRecord[]) => void,
     localId: string
 ) => {
-    const messagePort = useRef<MessageChannel['port1']>(null)
+    const messagePort = useRef<SyncWorkerMessageChannel['port1']>(null)
 
     const setTabState = (newState: SpreadsheetRecord[]) => {
         setState(newState)
         syncSharedWorker.port.postMessage({
-            type: 'set-state',
+            type: SYNC_SET_STATE_MESSAGE_TYPE,
             id: localId,
             state: newState,
         })
@@ -42,12 +48,12 @@ export const useSyncWorker = (
         }
         syncSharedWorker.port.start()
         syncSharedWorker.port.postMessage({
-            type: 'get-state',
+            type: SYNC_GET_STATE_MESSAGE_TYPE,
             id: localId,
         })
 
         return () => {
-            messagePort.current?.postMessage({ type: 'close' })
+            messagePort.current?.postMessage({ type: SYNC_CLOSE_MESSAGE_TYPE })
             messagePort.current?.close()
             messagePort.current = null
         }
